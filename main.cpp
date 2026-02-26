@@ -115,10 +115,10 @@ void enforce_limit() {
 // ==========================================
 int main() {
     system("chcp 65001"); 
-
-    putenv("HTTP_PROXY=");
-    putenv("HTTPS_PROXY=");
-    putenv("ALL_PROXY=");
+    
+_putenv("HTTP_PROXY=");
+_putenv("HTTPS_PROXY=");
+_putenv("ALL_PROXY=");
 
     cout << "=== 本地 AI 助手 (诊断版) ===" << endl;
     cout << "正在连接 127.0.0.1:11434..." << endl;
@@ -152,4 +152,5 @@ int main() {
 
     return 0;
 }
+
 
