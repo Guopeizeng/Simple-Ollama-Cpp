@@ -88,14 +88,23 @@ public:
         return reply;
     }
 private:
-void enforce_limit(){
-    if(m_context_buffer.length()>MAX_CONTEXT_LENGTH){
-        size_t start_pos = m_context_buffer.length()-MAX_CONTEXT_LENGTH;
-        m_context_buffer=m_context_buffer.substr(start_pos);
+void enforce_limit() {
+    if (m_context_buffer.length() > MAX_CONTEXT_LENGTH) {
+        size_t start_pos = m_context_buffer.length() - MAX_CONTEXT_LENGTH;
+
+        // ✅ 修复：对齐到 UTF-8 字符边界
+        // UTF-8 延续字节的特征：最高两位为 10（即 0x80~0xBF）
+        // 只要当前字节是延续字节，就往后移一位，直到找到字符起始字节
+        while (start_pos < m_context_buffer.length() &&
+               (static_cast<unsigned char>(m_context_buffer[start_pos]) & 0xC0) == 0x80) {
+            start_pos++;
+        }
+
+        m_context_buffer = m_context_buffer.substr(start_pos);
 
         size_t first_newline = m_context_buffer.find('\n');
-        if(first_newline != string::npos){
-            m_context_buffer = m_context_buffer.substr(first_newline+1);
+        if (first_newline != string::npos) {
+            m_context_buffer = m_context_buffer.substr(first_newline + 1);
         }
     }
 }
@@ -143,3 +152,4 @@ int main() {
 
     return 0;
 }
+
